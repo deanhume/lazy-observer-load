@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>title</title>
+  <title>Lazy Loading images using Intersection Observer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     .fade-in {
       animation-name: fadeIn;
@@ -21,16 +22,17 @@
         opacity: 1;
       }
     }
+
+.centered {
+   display:block;
+   margin:0 auto;
+}
   </style>
 </head>
 
 <body>
-  <div class="js-lazy-image" data-src="1.png">
-    <div class="js-lazy-image-content" style="height:200px;width:200px"></div>
-    <!-- <noscript>
-      <div style="background-image: url(1.png)"></div>
-    </noscript> -->
-  </div>
+  <!-- images by iconmonstr.com -->
+  <img class="js-lazy-image centered" data-src="burger.png">
   <br>
   <br>
   <br>
@@ -100,6 +102,8 @@
   <br>
   <br>
   <br>
+  <!-- images by iconmonstr.com -->
+  <img class="js-lazy-image centered" data-src="chips.png">
   <br>
   <br>
   <br>
@@ -219,16 +223,9 @@
   <br>
   <br>
   <br>
-  <br>
-  <!-- <img data-src="https://d1cf5d4f6459eaab586f-791099b254e564f039f4f8eec59a966d.ssl.cf3.rackcdn.com/Fast-ASP-NET-Websites.jpg"
-    class="js-lazy-image" /> -->
-  <div class="js-lazy-image" data-src="2.jpg">
-    <div class="js-lazy-image-content" style="height:200px;width:200px"></div>
-    <!-- <noscript>
-      <div style="background-image: url(2.jpg)"></div>
-    </noscript> -->
-  </div>
-  <script src="/lazy.js"></script>
+  <!-- images by iconmonstr.com -->
+  <img class="js-lazy-image centered" data-src="pizza.png">
+  <script src="/lazy-load.min.js"></script>
 </body>
 
 </html>

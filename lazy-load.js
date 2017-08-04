@@ -98,13 +98,8 @@ function onIntersection(entries) {
  * @param {string} src 
  */
 function applyImage(img, src) {
-  const el = img.querySelector('.js-lazy-image-content');
-  if (!el) {
-    return;
-  }
-
   // Prevent this from being lazy loaded a second time.
   img.classList.add('js-lazy-image--handled');
-  el.style.backgroundImage = `url(${src})`;
-  el.classList.add('fade-in');
+  img.src = src;
+  img.classList.add('fade-in');
 }
