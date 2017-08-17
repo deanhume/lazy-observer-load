@@ -11,7 +11,7 @@ let observer;
 
 // If we don't have support for intersection observer, loads the images immediately
 if (!('IntersectionObserver' in window)) {
-  Array.from(images).forEach(image => preloadImage(image));
+  loadImagesImmediately(images);
 } else {
   // It is supported, load the images
   observer = new IntersectionObserver(onIntersection, config);
@@ -76,7 +76,7 @@ function disconnect() {
 function onIntersection(entries) {
   // Disconnect if we've already loaded all of the images
   if (imageCount === 0) {
-    observer.disconnect();
+    disconnect();
   }
 
   // Loop through the entries
