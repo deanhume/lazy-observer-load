@@ -15,13 +15,15 @@ if (!('IntersectionObserver' in window)) {
 } else {
   // It is supported, load the images
   observer = new IntersectionObserver(onIntersection, config);
-  images.forEach(image => {
+
+  // foreach() is not supported in IE
+  for (let image in images) {
     if (image.classList.contains('js-lazy-image--handled')) {
       return;
     }
 
     observer.observe(image);
-  });
+  }
 }
 
 /**
@@ -55,7 +57,12 @@ function preloadImage(image) {
  * @param {array} images 
  */
 function loadImagesImmediately(images) {
-  Array.from(images).forEach(image => preloadImage(image));
+  const imageArray = Array.from(images);
+
+  // foreach() is not supported in IE
+  for (let image in imageArray) {
+    preloadImage(image);
+  }
 }
 
 /**
@@ -76,11 +83,11 @@ function disconnect() {
 function onIntersection(entries) {
   // Disconnect if we've already loaded all of the images
   if (imageCount === 0) {
-    disconnect();
+    observer.disconnect();
   }
 
   // Loop through the entries
-  entries.forEach(entry => {
+  for (let entry in entries) {
     // Are we in viewport?
     if (entry.intersectionRatio > 0) {
       imageCount--;
@@ -89,7 +96,7 @@ function onIntersection(entries) {
       observer.unobserve(entry.target);
       preloadImage(entry.target);
     }
-  });
+  }
 }
 
 /**
