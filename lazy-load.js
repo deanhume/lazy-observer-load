@@ -17,9 +17,10 @@ if (!('IntersectionObserver' in window)) {
   observer = new IntersectionObserver(onIntersection, config);
 
   // foreach() is not supported in IE
-  for (let image in images) {
+  for (let i = 0; i < images.length; i++) { 
+    let image = images[i];
     if (image.classList.contains('js-lazy-image--handled')) {
-      return;
+      continue;
     }
 
     observer.observe(image);
@@ -54,13 +55,14 @@ function preloadImage(image) {
 
 /**
  * Load all of the images immediately
- * @param {array} images 
+ * @param {NodeListOf<Element>} images 
  */
 function loadImagesImmediately(images) {
   const imageArray = Array.from(images);
 
   // foreach() is not supported in IE
-  for (let image in imageArray) {
+  for (let i = 0; i < images.length; i++) { 
+    let image = images[i];
     preloadImage(image);
   }
 }
@@ -87,7 +89,8 @@ function onIntersection(entries) {
   }
 
   // Loop through the entries
-  for (let entry in entries) {
+  for (let i = 0; i < entries.length; i++) { 
+    let entry = entries[i];
     // Are we in viewport?
     if (entry.intersectionRatio > 0) {
       imageCount--;
