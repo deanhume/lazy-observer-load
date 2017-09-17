@@ -58,8 +58,6 @@ function preloadImage(image) {
  * @param {NodeListOf<Element>} images 
  */
 function loadImagesImmediately(images) {
-  const imageArray = Array.from(images);
-
   // foreach() is not supported in IE
   for (let i = 0; i < images.length; i++) { 
     let image = images[i];
