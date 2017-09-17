@@ -50,7 +50,7 @@ function preloadImage(image) {
     return;
   }
 
-  return fetchImage(src).then(() => { applyImage(image, src) });
+  return fetchImage(src).then(() => { applyImage(image, src); });
 }
 
 /**
