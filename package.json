@@ -1,5 +1,5 @@
 {
-  "name": "Lazy Load - Intersection Observer",
+  "name": "lazy-observer-load",
   "version": "1.0.0",
   "description": "A library to lazy load images using Intersection Observer",
   "main": "lazy-load.js",
