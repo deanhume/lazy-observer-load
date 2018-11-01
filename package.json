@@ -1,0 +1,25 @@
+{
+  "name": "lazy-observer-load",
+  "version": "1.0.0",
+  "description": "A library to lazy load images using Intersection Observer",
+  "main": "lazy-load.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deanhume/lazy-observer-load.git"
+  },
+  "keywords": [
+    "lazy",
+    "loading",
+    "intersection",
+    "observer"
+  ],
+  "author": "Dean Hume",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deanhume/lazy-observer-load/issues"
+  },
+  "homepage": "https://github.com/deanhume/lazy-observer-load#readme"
+}
