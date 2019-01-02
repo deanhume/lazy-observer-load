@@ -83,7 +83,8 @@ function disconnect() {
 function onIntersection(entries) {
   // Disconnect if we've already loaded all of the images
   if (imageCount === 0) {
-    observer.disconnect();
+    disconnect();
+    return;
   }
 
   // Loop through the entries
