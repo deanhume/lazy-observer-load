@@ -1,29 +1,34 @@
-// Get all of the images that are marked up to lazy load
-const images = document.querySelectorAll('.js-lazy-image');
-const config = {
-  // If the image gets within 50px in the Y axis, start the download.
-  rootMargin: '50px 0px',
-  threshold: 0.01
-};
+let observerLazyLoad;
+let imagesToLazyLoad;
 
-let imageCount = images.length;
-let observer;
+launchLazyLoadObserver = () => {
+  // Get all of the images that are marked up to lazy load
+  imagesToLazyLoad = document.querySelectorAll('.js-lazy-image')
+  const config = {
+    // If the image gets within 50px in the Y axis, start the download.
+    rootMargin: '50px 0px',
+    threshold: 0.01
+  };
+  detectLazyLoadObserver(imagesToLazyLoad, config);
+}
 
-// If we don't have support for intersection observer, loads the images immediately
-if (!('IntersectionObserver' in window)) {
-  loadImagesImmediately(images);
-} else {
-  // It is supported, load the images
-  observer = new IntersectionObserver(onIntersection, config);
+detectLazyLoadObserver = (images, config) => {
+  // If we don't have support for intersection observer, loads the images immediately
+  if (!('IntersectionObserver' in window)) {
+    loadImagesImmediately(images);
+  } else {
+    // It is supported, load the images
+    observerLazyLoad = new IntersectionObserver(onIntersection, images, config);
 
-  // foreach() is not supported in IE
-  for (let i = 0; i < images.length; i++) { 
-    let image = images[i];
-    if (image.classList.contains('js-lazy-image--handled')) {
-      continue;
+    // foreach() is not supported in IE
+    for (let i = 0; i < images.length; i++) {
+      let image = images[i];
+      if (image.classList.contains('js-lazy-image--handled')) {
+        continue;
+      }
+
+      observerLazyLoad.observe(image);
     }
-
-    observer.observe(image);
   }
 }
 
@@ -31,7 +36,7 @@ if (!('IntersectionObserver' in window)) {
  * Fetchs the image for the given URL
  * @param {string} url 
  */
-function fetchImage(url) {
+fetchImage = (url) => {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.src = url;
@@ -44,7 +49,7 @@ function fetchImage(url) {
  * Preloads the image
  * @param {object} image 
  */
-function preloadImage(image) {
+preloadImage = (image) => {
   const src = image.dataset.src;
   if (!src) {
     return;
@@ -57,7 +62,7 @@ function preloadImage(image) {
  * Load all of the images immediately
  * @param {NodeListOf<Element>} images 
  */
-function loadImagesImmediately(images) {
+loadImagesImmediately = (images) => {
   // foreach() is not supported in IE
   for (let i = 0; i < images.length; i++) { 
     let image = images[i];
@@ -68,23 +73,22 @@ function loadImagesImmediately(images) {
 /**
  * Disconnect the observer
  */
-function disconnect() {
-  if (!observer) {
+disconnect = () => {
+  if (!observerLazyLoad) {
     return;
   }
 
-  observer.disconnect();
+  observerLazyLoad.disconnect();
 }
 
 /**
  * On intersection
  * @param {array} entries 
  */
-function onIntersection(entries) {
+onIntersection = (entries, images) => {
   // Disconnect if we've already loaded all of the images
-  if (imageCount === 0) {
-    disconnect();
-    return;
+  if (images.length === 0) {
+    observerLazyLoad.disconnect();
   }
 
   // Loop through the entries
@@ -92,10 +96,10 @@ function onIntersection(entries) {
     let entry = entries[i];
     // Are we in viewport?
     if (entry.intersectionRatio > 0) {
-      imageCount--;
+      images.length--;
 
       // Stop watching and load the image
-      observer.unobserve(entry.target);
+      observerLazyLoad.unobserve(entry.target);
       preloadImage(entry.target);
     }
   }
@@ -106,9 +110,14 @@ function onIntersection(entries) {
  * @param {object} img 
  * @param {string} src 
  */
-function applyImage(img, src) {
+applyImage = (img, src) => {
   // Prevent this from being lazy loaded a second time.
   img.classList.add('js-lazy-image--handled');
   img.src = src;
   img.classList.add('fade-in');
 }
+
+// Launch observer when DOM is ready
+document.addEventListener('DOMContentLoaded', function(){
+    launchLazyLoadObserver();
+});
