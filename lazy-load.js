@@ -1,35 +1,19 @@
-// Get all of the images that are marked up to lazy load
-const images = document.querySelectorAll('.js-lazy-image');
-const config = {
+const defaults = {
+  imageLoadedClass: 'js-lazy-image--handled',
+  imageSelector: '.js-lazy-image',
   // If the image gets within 50px in the Y axis, start the download.
   rootMargin: '50px 0px',
   threshold: 0.01
 };
 
-let imageCount = images.length;
-let observer;
-
-// If we don't have support for intersection observer, loads the images immediately
-if (!('IntersectionObserver' in window)) {
-  loadImagesImmediately(images);
-} else {
-  // It is supported, load the images
-  observer = new IntersectionObserver(onIntersection, config);
-
-  // foreach() is not supported in IE
-  for (let i = 0; i < images.length; i++) { 
-    let image = images[i];
-    if (image.classList.contains('js-lazy-image--handled')) {
-      continue;
-    }
-
-    observer.observe(image);
-  }
-}
+let config,
+    images,
+    imageCount,
+    observer;
 
 /**
  * Fetchs the image for the given URL
- * @param {string} url 
+ * @param {string} url
  */
 function fetchImage(url) {
   return new Promise((resolve, reject) => {
@@ -42,10 +26,10 @@ function fetchImage(url) {
 
 /**
  * Preloads the image
- * @param {object} image 
+ * @param {object} image
  */
 function preloadImage(image) {
-  const src = image.dataset.src;
+  const src = image.dataset.original;
   if (!src) {
     return;
   }
@@ -55,11 +39,11 @@ function preloadImage(image) {
 
 /**
  * Load all of the images immediately
- * @param {NodeListOf<Element>} images 
+ * @param {NodeListOf<Element>} images
  */
 function loadImagesImmediately(images) {
   // foreach() is not supported in IE
-  for (let i = 0; i < images.length; i++) { 
+  for (let i = 0; i < images.length; i++) {
     let image = images[i];
     preloadImage(image);
   }
@@ -78,7 +62,7 @@ function disconnect() {
 
 /**
  * On intersection
- * @param {array} entries 
+ * @param {array} entries
  */
 function onIntersection(entries) {
   // Disconnect if we've already loaded all of the images
@@ -88,7 +72,7 @@ function onIntersection(entries) {
   }
 
   // Loop through the entries
-  for (let i = 0; i < entries.length; i++) { 
+  for (let i = 0; i < entries.length; i++) {
     let entry = entries[i];
     // Are we in viewport?
     if (entry.intersectionRatio > 0) {
@@ -103,12 +87,41 @@ function onIntersection(entries) {
 
 /**
  * Apply the image
- * @param {object} img 
- * @param {string} src 
+ * @param {object} img
+ * @param {string} src
  */
 function applyImage(img, src) {
   // Prevent this from being lazy loaded a second time.
-  img.classList.add('js-lazy-image--handled');
+  img.classList.add(config.imageLoadedClass);
   img.src = src;
-  img.classList.add('fade-in');
 }
+
+let LazyLoad = {
+
+  init: (options) => {
+    config = {...defaults, ...options};
+
+    images = document.querySelectorAll(config.imageSelector);
+    imageCount = images.length;
+
+    // If we don't have support for intersection observer, loads the images immediately
+    if (!('IntersectionObserver' in window)) {
+      loadImagesImmediately(images);
+    } else {
+      // It is supported, load the images
+      observer = new IntersectionObserver(onIntersection, config);
+
+      // foreach() is not supported in IE
+      for (let i = 0; i < images.length; i++) {
+        let image = images[i];
+        if (image.classList.contains(config.imageLoadedClass)) {
+          continue;
+        }
+
+        observer.observe(image);
+      }
+    }
+  }
+};
+
+export default LazyLoad;
