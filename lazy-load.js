@@ -1,29 +1,33 @@
-// Get all of the images that are marked up to lazy load
-const images = document.querySelectorAll('.js-lazy-image');
-const config = {
-  // If the image gets within 50px in the Y axis, start the download.
-  rootMargin: '50px 0px',
-  threshold: 0.01
-};
-
-let imageCount = images.length;
 let observer;
+const images = document.querySelectorAll('.js-lazy-image');
 
-// If we don't have support for intersection observer, loads the images immediately
-if (!('IntersectionObserver' in window)) {
-  loadImagesImmediately(images);
-} else {
-  // It is supported, load the images
-  observer = new IntersectionObserver(onIntersection, config);
+function launchLazyLoadObserver() {
+  // Get all of the images that are marked up to lazy load
+  const config = {
+    // If the image gets within 50px in the Y axis, start the download.
+    rootMargin: '50px 0px',
+    threshold: 0.01
+  };
+  detectLazyLoadObserver(images, config);
+}
 
-  // foreach() is not supported in IE
-  for (let i = 0; i < images.length; i++) { 
-    let image = images[i];
-    if (image.classList.contains('js-lazy-image--handled')) {
-      continue;
+function detectLazyLoadObserver(images, config) {
+  // If we don't have support for intersection observer, loads the images immediately
+  if (!('IntersectionObserver' in window)) {
+    loadImagesImmediately(images);
+  } else {
+    // It is supported, load the images
+    observer = new IntersectionObserver(onIntersection, images, config);
+
+    // foreach() is not supported in IE
+    for (let i = 0; i < images.length; i++) {
+      let image = images[i];
+      if (image.classList.contains('js-lazy-image--handled')) {
+        continue;
+      }
+
+      observer.observe(image);
     }
-
-    observer.observe(image);
   }
 }
 
@@ -80,11 +84,10 @@ function disconnect() {
  * On intersection
  * @param {array} entries 
  */
-function onIntersection(entries) {
+function onIntersection(entries, images) {
   // Disconnect if we've already loaded all of the images
-  if (imageCount === 0) {
-    disconnect();
-    return;
+  if (images.length === 0) {
+    observer.disconnect();
   }
 
   // Loop through the entries
@@ -92,7 +95,7 @@ function onIntersection(entries) {
     let entry = entries[i];
     // Are we in viewport?
     if (entry.intersectionRatio > 0) {
-      imageCount--;
+      images.length--;
 
       // Stop watching and load the image
       observer.unobserve(entry.target);
@@ -112,3 +115,8 @@ function applyImage(img, src) {
   img.src = src;
   img.classList.add('fade-in');
 }
+
+// Launch observer when DOM is ready
+document.addEventListener('DOMContentLoaded', function(){
+    launchLazyLoadObserver();
+});
