@@ -12,7 +12,7 @@ let config,
     observer;
 
 /**
- * Fetchs the image for the given URL
+ * Fetches the image for the given URL
  * @param {string} url
  */
 function fetchImage(url) {
@@ -29,7 +29,7 @@ function fetchImage(url) {
  * @param {object} image
  */
 function preloadImage(image) {
-  const src = image.dataset.original;
+  const src = image.dataset.src;
   if (!src) {
     return;
   }
