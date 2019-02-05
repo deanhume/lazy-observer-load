@@ -1,14 +1,15 @@
-let observer;
-const images = document.querySelectorAll('.js-lazy-image');
+let observerLazyLoad;
+let imagesToLazyLoad;
 
 launchLazyLoadObserver = () => {
   // Get all of the images that are marked up to lazy load
+  imagesToLazyLoad = document.querySelectorAll('.js-lazy-image')
   const config = {
     // If the image gets within 50px in the Y axis, start the download.
     rootMargin: '50px 0px',
     threshold: 0.01
   };
-  detectLazyLoadObserver(images, config);
+  detectLazyLoadObserver(imagesToLazyLoad, config);
 }
 
 detectLazyLoadObserver = (images, config) => {
@@ -17,7 +18,7 @@ detectLazyLoadObserver = (images, config) => {
     loadImagesImmediately(images);
   } else {
     // It is supported, load the images
-    observer = new IntersectionObserver(onIntersection, images, config);
+    observerLazyLoad = new IntersectionObserver(onIntersection, images, config);
 
     // foreach() is not supported in IE
     for (let i = 0; i < images.length; i++) {
@@ -26,7 +27,7 @@ detectLazyLoadObserver = (images, config) => {
         continue;
       }
 
-      observer.observe(image);
+      observerLazyLoad.observe(image);
     }
   }
 }
@@ -73,11 +74,11 @@ loadImagesImmediately = (images) => {
  * Disconnect the observer
  */
 disconnect = () => {
-  if (!observer) {
+  if (!observerLazyLoad) {
     return;
   }
 
-  observer.disconnect();
+  observerLazyLoad.disconnect();
 }
 
 /**
@@ -87,7 +88,7 @@ disconnect = () => {
 onIntersection = (entries, images) => {
   // Disconnect if we've already loaded all of the images
   if (images.length === 0) {
-    observer.disconnect();
+    observerLazyLoad.disconnect();
   }
 
   // Loop through the entries
@@ -98,7 +99,7 @@ onIntersection = (entries, images) => {
       images.length--;
 
       // Stop watching and load the image
-      observer.unobserve(entry.target);
+      observerLazyLoad.unobserve(entry.target);
       preloadImage(entry.target);
     }
   }
