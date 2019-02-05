@@ -1,7 +1,7 @@
 let observer;
 const images = document.querySelectorAll('.js-lazy-image');
 
-function launchLazyLoadObserver() {
+launchLazyLoadObserver = () => {
   // Get all of the images that are marked up to lazy load
   const config = {
     // If the image gets within 50px in the Y axis, start the download.
@@ -11,7 +11,7 @@ function launchLazyLoadObserver() {
   detectLazyLoadObserver(images, config);
 }
 
-function detectLazyLoadObserver(images, config) {
+detectLazyLoadObserver = (images, config) => {
   // If we don't have support for intersection observer, loads the images immediately
   if (!('IntersectionObserver' in window)) {
     loadImagesImmediately(images);
@@ -35,7 +35,7 @@ function detectLazyLoadObserver(images, config) {
  * Fetchs the image for the given URL
  * @param {string} url 
  */
-function fetchImage(url) {
+fetchImage = (url) => {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.src = url;
@@ -48,7 +48,7 @@ function fetchImage(url) {
  * Preloads the image
  * @param {object} image 
  */
-function preloadImage(image) {
+preloadImage = (image) => {
   const src = image.dataset.src;
   if (!src) {
     return;
@@ -61,7 +61,7 @@ function preloadImage(image) {
  * Load all of the images immediately
  * @param {NodeListOf<Element>} images 
  */
-function loadImagesImmediately(images) {
+loadImagesImmediately = (images) => {
   // foreach() is not supported in IE
   for (let i = 0; i < images.length; i++) { 
     let image = images[i];
@@ -72,7 +72,7 @@ function loadImagesImmediately(images) {
 /**
  * Disconnect the observer
  */
-function disconnect() {
+disconnect = () => {
   if (!observer) {
     return;
   }
@@ -84,7 +84,7 @@ function disconnect() {
  * On intersection
  * @param {array} entries 
  */
-function onIntersection(entries, images) {
+onIntersection = (entries, images) => {
   // Disconnect if we've already loaded all of the images
   if (images.length === 0) {
     observer.disconnect();
@@ -109,7 +109,7 @@ function onIntersection(entries, images) {
  * @param {object} img 
  * @param {string} src 
  */
-function applyImage(img, src) {
+applyImage = (img, src) => {
   // Prevent this from being lazy loaded a second time.
   img.classList.add('js-lazy-image--handled');
   img.src = src;
