@@ -189,7 +189,10 @@
   <br>
   <br>
   <img class="js-lazy-image centered" src="./img/dog-battersea.svg" width="400" height="400" data-src="./img/dog-battersea.jpg">
-  <script src="lazy-load.min.js"></script>
+  <script type="module">
+    import LazyLoad from "./lazy-load.js";
+    LazyLoad.init();
+  </script>
 </body>
 
 </html>
