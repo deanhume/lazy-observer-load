@@ -30,11 +30,12 @@ function fetchImage(url) {
  */
 function preloadImage(image) {
   const src = image.dataset.src;
+  const srcset = image.srcset;
   if (!src) {
     return;
   }
 
-  return fetchImage(src).then(() => { applyImage(image, src); });
+  return fetchImage(src).then(() => { applyImage(image, src, srcset); });
 }
 
 /**
@@ -90,10 +91,11 @@ function onIntersection(entries) {
  * @param {object} img
  * @param {string} src
  */
-function applyImage(img, src) {
+function applyImage(img, src, srcset) {
   // Prevent this from being lazy loaded a second time.
   img.classList.add(config.imageLoadedClass);
   img.src = src;
+  img.srcset = srcset;
 }
 
 let LazyLoad = {
